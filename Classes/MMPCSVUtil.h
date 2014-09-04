@@ -25,6 +25,29 @@
 
 #import <Foundation/Foundation.h>
 
+typedef void(^MMPCSVRecordBlock)(id record);
+
+@interface MMPCSVFormat : NSObject
+
++ (instancetype)defaultFormat;
+
+- (MMPCSVFormat *)delimiter:(unichar)delimiter;
+
+@end
+
+@interface MMPCSV : NSObject
+
+@property (nonatomic, strong) MMPCSVFormat *format;
+
++ (instancetype)readURL:(NSURL *)url;
+- (instancetype)format:(MMPCSVFormat *)format;
+
+- (instancetype)each:(MMPCSVRecordBlock)block;
+
+@end
+
 @interface MMPCSVUtil : NSObject
+
+
 
 @end

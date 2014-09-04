@@ -7,6 +7,7 @@
 //
 
 #import "MMPViewController.h"
+#import <MMPCSVUtil/MMPCSVUtil.h>
 
 @interface MMPViewController ()
 
@@ -17,7 +18,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
+	
+    [[MMPCSV readURL:[NSURL URLWithString:@""]] each:^(NSArray *record) {
+        
+    }];
 }
 
 - (void)didReceiveMemoryWarning

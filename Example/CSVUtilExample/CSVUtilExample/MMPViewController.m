@@ -19,9 +19,13 @@
 {
     [super viewDidLoad];
 	
-    [[MMPCSV readURL:[NSURL URLWithString:@""]] each:^(NSArray *record) {
-        
-    }];
+    [[[MMPCSV readURL:[[NSBundle mainBundle] URLForResource: @"resorts" withExtension:@"csv"]]
+              field:^(id field, NSInteger index) {
+                  NSLog(@"%ld, %@", index, field);
+              }]
+              each:^(NSArray *record) {
+                  NSLog(@"%@", record);
+              }];
 }
 
 - (void)didReceiveMemoryWarning

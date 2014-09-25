@@ -25,7 +25,26 @@
 
 #import <Foundation/Foundation.h>
 
+typedef void(^MMPCSVFieldBlock)(id field, NSInteger index);
 typedef void(^MMPCSVRecordBlock)(id record);
+typedef void(^MMPCSVCommentBlock)(NSString *comment);
+typedef void(^MMPCSVErrorBlock)(NSError *error);
+
+extern NSString * const MMPCSVErrorDomain;
+
+typedef NS_ENUM(NSInteger, MMPCSVErrorCode) {
+    /**
+     *  Indicates that a delimited file is incorrectly formatted.
+     *  For example, perhaps a double quote is in the wrong position.
+     */
+    MMPCSVErrorCodeInvalidFormat = 1,
+    
+    /**
+     *  When using @c CHCSVParserOptionsUsesFirstLineAsKeys, all of the lines in the file
+     *  must have the same number of fields. If they do not, parsing is aborted and this error is returned.
+     */
+    MMPCSVErrorCodeIncorrectNumberOfFields,
+};
 
 @interface MMPCSVFormat : NSObject
 
@@ -42,7 +61,13 @@ typedef void(^MMPCSVRecordBlock)(id record);
 + (instancetype)readURL:(NSURL *)url;
 - (instancetype)format:(MMPCSVFormat *)format;
 
-- (instancetype)each:(MMPCSVRecordBlock)block;
+- (instancetype)begin:(void (^)(void))block;
+- (instancetype)end:(void (^)(void))block;
+- (instancetype)field:(MMPCSVFieldBlock)block;
+- (instancetype)comment:(MMPCSVCommentBlock)block;
+- (instancetype)error:(MMPCSVErrorBlock)block;
+- (void)each:(MMPCSVRecordBlock)block;
+- (NSArray *)all;
 
 @end
 

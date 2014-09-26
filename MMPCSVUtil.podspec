@@ -1,12 +1,14 @@
 Pod::Spec.new do |s|
   s.name             = "MMPCSVUtil"
-  s.version          = "0.0.1"
-  s.summary          = "Utility for parsing and writing comma-separated values (CSV) files"
+  s.version          = "0.1.0"
+  s.summary          = "Utility for parsing comma-separated values (CSV) files with blocks and functional programming idioms"
   s.description      = <<-DESC
-                       Utility for parsing and writing comma-separated values (CSV) files. 
+                       Utility for parsing comma-separated values (CSV) files with blocks and functional programming idioms. 
 
                        Features:
-                       * Supports CSV and TSV.
+                       * Supports CSV or other user specified delimiter.
+                       * Blocks for interacting with the parser.
+                       * Functional programming idioms (filter, map, etc.)
                        DESC
   s.homepage         = "https://github.com/mpurbo/MMPCSVUtil"
   s.license          = 'MIT'

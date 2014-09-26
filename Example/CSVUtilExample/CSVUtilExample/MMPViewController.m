@@ -25,6 +25,7 @@
     NSLog(@"CSV has %lu records", [allRecords count]);
     
     // with callback for each field & record
+    // without header, producing NSArray
     
     [[[MMPCSV readURL:[[NSBundle mainBundle] URLForResource: @"test1" withExtension:@"csv"]]
               field:^(id field, NSInteger index) {
@@ -32,6 +33,14 @@
               }]
               each:^(NSArray *record) {
                   NSLog(@"%@", record);
+              }];
+    
+    // with header, producing NSDictionary
+    
+    [[[MMPCSV readURL:[[NSBundle mainBundle] URLForResource: @"test2" withExtension:@"csv"]]
+              format:[[MMPCSVFormat defaultFormat] useFirstLineAsKeys]]
+              each:^(NSDictionary *record) {
+                  NSLog(@"title: %@", [record objectForKey:@"title"]);
               }];
     
     // with header, error handling, and other functional goodies

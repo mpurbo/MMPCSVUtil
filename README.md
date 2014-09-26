@@ -53,7 +53,7 @@ Following example shows how to:
 - use `error` to handle errors;
 - use `begin` to get notified when the parser starts, and optionally process the header;
 - use `map` to get map parser record output into any object;
-- use `filter` to filter records produced by the parser;
+- use `filter` to filter records produced by the parser.
 ```objectivec
 [[[[[[[MMPCSV readURL:[[NSBundle mainBundle] URLForResource: @"test2" withExtension:@"csv"]]
               format:[[[MMPCSVFormat defaultFormat]

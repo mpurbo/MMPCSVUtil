@@ -22,7 +22,8 @@
 		A946904519B57F1C0093475E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A946902719B57F1C0093475E /* UIKit.framework */; };
 		A946904D19B57F1C0093475E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A946904B19B57F1C0093475E /* InfoPlist.strings */; };
 		A946904F19B57F1C0093475E /* CSVUtilExampleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A946904E19B57F1C0093475E /* CSVUtilExampleTests.m */; };
-		A946905919B5C9010093475E /* resorts.csv in Resources */ = {isa = PBXBuildFile; fileRef = A946905819B5C9010093475E /* resorts.csv */; };
+		A946905919B5C9010093475E /* test1.csv in Resources */ = {isa = PBXBuildFile; fileRef = A946905819B5C9010093475E /* test1.csv */; };
+		A97571F119D5014B008AD70D /* test2.csv in Resources */ = {isa = PBXBuildFile; fileRef = A97571EF19D5014B008AD70D /* test2.csv */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,7 +58,8 @@
 		A946904A19B57F1C0093475E /* CSVUtilExampleTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CSVUtilExampleTests-Info.plist"; sourceTree = "<group>"; };
 		A946904C19B57F1C0093475E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		A946904E19B57F1C0093475E /* CSVUtilExampleTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CSVUtilExampleTests.m; sourceTree = "<group>"; };
-		A946905819B5C9010093475E /* resorts.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = resorts.csv; sourceTree = "<group>"; };
+		A946905819B5C9010093475E /* test1.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test1.csv; sourceTree = "<group>"; };
+		A97571EF19D5014B008AD70D /* test2.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test2.csv; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -127,7 +129,8 @@
 				A946903919B57F1C0093475E /* MMPViewController.m */,
 				A946903B19B57F1C0093475E /* Images.xcassets */,
 				A946902A19B57F1C0093475E /* Supporting Files */,
-				A946905819B5C9010093475E /* resorts.csv */,
+				A946905819B5C9010093475E /* test1.csv */,
+				A97571EF19D5014B008AD70D /* test2.csv */,
 			);
 			path = CSVUtilExample;
 			sourceTree = "<group>";
@@ -240,10 +243,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A97571F119D5014B008AD70D /* test2.csv in Resources */,
 				A946903C19B57F1C0093475E /* Images.xcassets in Resources */,
 				A946902E19B57F1C0093475E /* InfoPlist.strings in Resources */,
 				A946903719B57F1C0093475E /* Main.storyboard in Resources */,
-				A946905919B5C9010093475E /* resorts.csv in Resources */,
+				A946905919B5C9010093475E /* test1.csv in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

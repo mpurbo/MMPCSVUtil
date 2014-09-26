@@ -29,6 +29,8 @@ typedef void(^MMPCSVFieldBlock)(id field, NSInteger index);
 typedef void(^MMPCSVRecordBlock)(id record);
 typedef void(^MMPCSVCommentBlock)(NSString *comment);
 typedef void(^MMPCSVErrorBlock)(NSError *error);
+typedef BOOL(^MMPCSVFilterBlock)(id record);
+typedef id(^MMPCSVMapBlock)(id record);
 
 extern NSString * const MMPCSVErrorDomain;
 
@@ -40,17 +42,24 @@ typedef NS_ENUM(NSInteger, MMPCSVErrorCode) {
     MMPCSVErrorCodeInvalidFormat = 1,
     
     /**
-     *  When using @c CHCSVParserOptionsUsesFirstLineAsKeys, all of the lines in the file
+     *  When using useFirstLineAsKeys, all of the lines in the file
      *  must have the same number of fields. If they do not, parsing is aborted and this error is returned.
      */
-    MMPCSVErrorCodeIncorrectNumberOfFields,
+    MMPCSVErrorCodeIncorrectNumberOfFields
 };
 
 @interface MMPCSVFormat : NSObject
 
 + (instancetype)defaultFormat;
 
-- (MMPCSVFormat *)delimiter:(unichar)delimiter;
+- (instancetype)delimiter:(unichar)delimiter;
+- (instancetype)recognizeComments;
+- (instancetype)recognizeBackslashesAsEscapes;
+- (instancetype)recognizeLeadingEqualSign;
+- (instancetype)useFirstLineAsKeys;
+- (instancetype)sanitizeFields;
+- (instancetype)trimWhitespace;
+
 
 @end
 
@@ -59,20 +68,20 @@ typedef NS_ENUM(NSInteger, MMPCSVErrorCode) {
 @property (nonatomic, strong) MMPCSVFormat *format;
 
 + (instancetype)readURL:(NSURL *)url;
+
 - (instancetype)format:(MMPCSVFormat *)format;
 
-- (instancetype)begin:(void (^)(void))block;
+- (instancetype)begin:(MMPCSVRecordBlock)block;
 - (instancetype)end:(void (^)(void))block;
 - (instancetype)field:(MMPCSVFieldBlock)block;
 - (instancetype)comment:(MMPCSVCommentBlock)block;
 - (instancetype)error:(MMPCSVErrorBlock)block;
+
+- (instancetype)filter:(MMPCSVFilterBlock)block;
+- (instancetype)map:(MMPCSVMapBlock)block;
+
 - (void)each:(MMPCSVRecordBlock)block;
 - (NSArray *)all;
 
 @end
 
-@interface MMPCSVUtil : NSObject
-
-
-
-@end

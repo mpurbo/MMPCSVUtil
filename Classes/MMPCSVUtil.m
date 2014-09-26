@@ -38,6 +38,7 @@ NSString *const MMPCSVErrorDomain = @"org.purbo.csv";
 @interface MMPCSVFormat()
 
 @property (nonatomic, assign) unichar delimiter;
+@property (nonatomic, assign) BOOL usesFirstLineAsKeys;
 @property (nonatomic, assign) BOOL recognizesComments;
 @property (nonatomic, assign) BOOL recognizesBackslashesAsEscapes;
 @property (nonatomic, assign) BOOL trimsWhitespace;
@@ -53,6 +54,7 @@ NSString *const MMPCSVErrorDomain = @"org.purbo.csv";
 {
     MMPCSVFormat *ret = [MMPCSVFormat new];
     ret.delimiter = ',';
+    ret.usesFirstLineAsKeys = NO;
     ret.recognizesComments = NO;
     ret.recognizesBackslashesAsEscapes = NO;
     ret.trimsWhitespace = NO;
@@ -67,15 +69,45 @@ NSString *const MMPCSVErrorDomain = @"org.purbo.csv";
     return ret;
 }
 
-- (MMPCSVFormat *)delimiter:(unichar)delimiter
+- (instancetype)delimiter:(unichar)delimiter
 {
     _delimiter = delimiter;
     return self;
 }
 
-- (MMPCSVFormat *)recognizeComments
+- (instancetype)recognizeComments
 {
     _recognizesComments = YES;
+    return self;
+}
+
+- (instancetype)useFirstLineAsKeys
+{
+    _usesFirstLineAsKeys = YES;
+    return self;
+}
+
+- (instancetype)sanitizeFields
+{
+    _sanitizesFields = YES;
+    return self;
+}
+
+- (instancetype)recognizeBackslashesAsEscapes
+{
+    _recognizesBackslashesAsEscapes = YES;
+    return self;
+}
+
+- (instancetype)trimWhitespace
+{
+    _trimsWhitespace = YES;
+    return self;
+}
+
+- (instancetype)recognizeLeadingEqualSign
+{
+    _recognizesLeadingEqualSign = YES;
     return self;
 }
 
@@ -84,12 +116,14 @@ NSString *const MMPCSVErrorDomain = @"org.purbo.csv";
 @interface MMPCSV()
 
 @property (nonatomic, strong) NSInputStream *stream;
-@property (nonatomic, copy) void(^beginBlock)();
+@property (nonatomic, copy) MMPCSVRecordBlock beginBlock;
 @property (nonatomic, copy) void(^endBlock)();
 @property (nonatomic, copy) MMPCSVFieldBlock fieldBlock;
 @property (nonatomic, copy) MMPCSVRecordBlock eachBlock;
 @property (nonatomic, copy) MMPCSVCommentBlock commentBlock;
 @property (nonatomic, copy) MMPCSVErrorBlock errorBlock;
+@property (nonatomic, copy) MMPCSVFilterBlock filterBlock;
+@property (nonatomic, copy) MMPCSVMapBlock mapBlock;
 
 @property (nonatomic, strong) NSMutableString *string;
 @property (nonatomic, strong) NSMutableData *stringBuffer;
@@ -101,7 +135,7 @@ NSString *const MMPCSVErrorDomain = @"org.purbo.csv";
 @property (nonatomic, assign) NSRange fieldRange;
 @property (nonatomic, assign) NSUInteger currentRecord;
 @property (nonatomic, strong) NSMutableArray *currentRecordArray;
-@property (nonatomic, strong) NSMutableDictionary *currentRecordDict;
+@property (nonatomic, strong) NSArray *header;
 @property (nonatomic, strong) NSError *error;
 @property (nonatomic, strong) NSMutableString *sanitizedField;
 
@@ -142,7 +176,7 @@ NSString *const MMPCSVErrorDomain = @"org.purbo.csv";
     return self;
 }
 
-- (instancetype)begin:(void (^)(void))block
+- (instancetype)begin:(MMPCSVRecordBlock)block
 {
     self.beginBlock = block;
     return self;
@@ -172,6 +206,18 @@ NSString *const MMPCSVErrorDomain = @"org.purbo.csv";
     return self;
 }
 
+- (instancetype)filter:(MMPCSVFilterBlock)block
+{
+    self.filterBlock = block;
+    return self;
+}
+
+- (instancetype)map:(MMPCSVMapBlock)block
+{
+    self.mapBlock = block;
+    return self;
+}
+
 - (void)each:(MMPCSVRecordBlock)block
 {
     self.eachBlock = block;
@@ -193,12 +239,11 @@ NSString *const MMPCSVErrorDomain = @"org.purbo.csv";
     [self initParser];
     
     @autoreleasepool {
-        if (_beginBlock) {
-            _beginBlock();
+        if (!_format.usesFirstLineAsKeys && _beginBlock) {
+            _beginBlock(nil);
         }
         
         _currentRecord = 0;
-        self.currentRecordArray = [NSMutableArray new];
         
         while ([self parseRecord]) {
             ; // yep;
@@ -221,6 +266,7 @@ NSString *const MMPCSVErrorDomain = @"org.purbo.csv";
     self.string = [NSMutableString new];
     self.stringBuffer = [NSMutableData new];
     self.sanitizedField = [NSMutableString new];
+    self.header = nil;
     
     if (!_streamEncoding) {
         self.streamEncoding = @([self sniffEncoding]);
@@ -458,8 +504,41 @@ NSString *const MMPCSVErrorDomain = @"org.purbo.csv";
 {
     if (_cancelled) { return; }
     
-    if (_eachBlock) {
-        _eachBlock(_currentRecordArray);
+    id record = nil;
+    
+    if (_format.usesFirstLineAsKeys) {
+        if (!_header) {
+            // must be first record because _header is still nil
+            self.header = [NSArray arrayWithArray:_currentRecordArray];
+            if (_beginBlock) {
+                _beginBlock(_header);
+            }
+        } else {
+            // make sure size is the same as header
+            if ([_currentRecordArray count] == [_header count]) {
+                NSMutableDictionary *dictRecord = [NSMutableDictionary new];
+                NSUInteger i = 0;
+                for (NSString *headerField in _header) {
+                    [dictRecord setObject:[_currentRecordArray objectAtIndex:i] forKey:headerField];
+                    i++;
+                }
+                record = dictRecord;
+            } else {
+                _error = [[NSError alloc] initWithDomain:MMPCSVErrorDomain code:MMPCSVErrorCodeInvalidFormat userInfo:nil];
+                return;
+            }
+        }
+    } else {
+        record = _currentRecordArray;
+    }
+    
+    if (record && _eachBlock) {
+        if (_mapBlock) {
+            record = _mapBlock(record);
+        }
+        if (!_filterBlock || (_filterBlock && _filterBlock(record))) {
+            _eachBlock(record);
+        }
     }
 }
 
@@ -611,12 +690,3 @@ NSString *const MMPCSVErrorDomain = @"org.purbo.csv";
 
 @end
 
-
-@interface MMPCSVUtil () {
-}
-
-@end
-
-@implementation MMPCSVUtil
-
-@end

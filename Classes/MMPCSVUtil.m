@@ -526,7 +526,7 @@ NSString *const MMPCSVErrorDomain = @"org.purbo.csv";
                 }
                 record = dictRecord;
             } else {
-                _error = [[NSError alloc] initWithDomain:MMPCSVErrorDomain code:MMPCSVErrorCodeInvalidFormat userInfo:nil];
+                _error = [[NSError alloc] initWithDomain:MMPCSVErrorDomain code:MMPCSVErrorCodeIncorrectNumberOfFields userInfo:nil];
                 return;
             }
         }

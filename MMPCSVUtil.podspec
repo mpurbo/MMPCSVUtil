@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "MMPCSVUtil"
-  s.version          = "0.1.0"
+  s.version          = "0.1.1"
   s.summary          = "Utility for parsing comma-separated values (CSV) files with blocks and functional programming idioms"
   s.description      = <<-DESC
                        Utility for parsing comma-separated values (CSV) files with blocks and functional programming idioms. 

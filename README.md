@@ -35,8 +35,8 @@ To save memory for larger CSV files, it's better to interact with the parser dir
           field:^(id field, NSInteger index) {
               NSLog(@"%ld, %@", index, field);
           }]
-          each:^(NSArray *record) {
-              NSLog(@"%@", record);
+          each:^(NSArray *record, NSUInteger index) {
+              NSLog(@"%ld: %@", index, record);
           }];
 ```
 
@@ -44,8 +44,8 @@ If the first line on the CSV file is a header, the values of the header can be u
 ```objectivec
 [[[MMPCSV readURL:[[NSBundle mainBundle] URLForResource: @"test2" withExtension:@"csv"]]
           format:[[MMPCSVFormat defaultFormat] useFirstLineAsKeys]]
-          each:^(NSDictionary *record) {
-              NSLog(@"title: %@", [record objectForKey:@"title"]);
+          each:^(NSDictionary *record, NSUInteger index) {
+              NSLog(@"%ld: title: %@", index, [record objectForKey:@"title"]);
           }];
 ```
 
@@ -71,8 +71,8 @@ Following example shows how to:
               filter:^BOOL(NSString *title) {
                   return [title length] > 10;
               }]
-              each:^(NSString *longTitle) {
-                  NSLog(@"%@", longTitle);
+              each:^(NSString *longTitle, NSUInteger index) {
+                  NSLog(@"%ld: %@", index, longTitle);
               }];
 ```
 Note that `map` will be performed *before* `filter`, thus object type passed into `filter` will be the type returned by `map`.

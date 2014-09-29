@@ -27,8 +27,8 @@
 
 #import <Foundation/Foundation.h>
 
-typedef void(^MMPCSVFieldBlock)(id field, NSInteger index);
-typedef void(^MMPCSVRecordBlock)(id record);
+typedef void(^MMPCSVFieldBlock)(id field, NSUInteger index);
+typedef void(^MMPCSVRecordBlock)(id record, NSUInteger index);
 typedef void(^MMPCSVCommentBlock)(NSString *comment);
 typedef void(^MMPCSVErrorBlock)(NSError *error);
 typedef BOOL(^MMPCSVFilterBlock)(id record);

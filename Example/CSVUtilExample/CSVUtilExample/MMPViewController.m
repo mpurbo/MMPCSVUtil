@@ -28,19 +28,19 @@
     // without header, producing NSArray
     
     [[[MMPCSV readURL:[[NSBundle mainBundle] URLForResource: @"test1" withExtension:@"csv"]]
-              field:^(id field, NSInteger index) {
+              field:^(id field, NSUInteger index) {
                   NSLog(@"%ld, %@", index, field);
               }]
-              each:^(NSArray *record) {
-                  NSLog(@"%@", record);
+              each:^(NSArray *record, NSUInteger index) {
+                  NSLog(@"%ld: %@", index, record);
               }];
     
     // with header, producing NSDictionary
     
     [[[MMPCSV readURL:[[NSBundle mainBundle] URLForResource: @"test2" withExtension:@"csv"]]
               format:[[MMPCSVFormat defaultFormat] useFirstLineAsKeys]]
-              each:^(NSDictionary *record) {
-                  NSLog(@"title: %@", [record objectForKey:@"title"]);
+              each:^(NSDictionary *record, NSUInteger index) {
+                  NSLog(@"%ld: title: %@", index, [record objectForKey:@"title"]);
               }];
     
     // with header, error handling, and other functional goodies
@@ -52,7 +52,7 @@
                   error:^(NSError *error) {
                       NSLog(@"error: %@", error);
                   }]
-                  begin:^(NSArray *header) {
+                  begin:^(NSArray *header, NSUInteger index) {
                       NSLog(@"header: %@", header);
                   }]
                   map:^NSString *(NSDictionary *record) {
@@ -61,8 +61,8 @@
                   filter:^BOOL(NSString *title) {
                       return [title length] > 10;
                   }]
-                  each:^(NSString *longTitle) {
-                      NSLog(@"%@", longTitle);
+                  each:^(NSString *longTitle, NSUInteger index) {
+                      NSLog(@"%ld: %@", index, longTitle);
                   }];
     
 }

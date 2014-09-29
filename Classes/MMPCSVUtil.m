@@ -229,7 +229,7 @@ NSString *const MMPCSVErrorDomain = @"org.purbo.csv";
 - (NSArray *)all
 {
     __block NSMutableArray *allRecords = [NSMutableArray array];
-    self.eachBlock = ^(id record) {
+    self.eachBlock = ^(id record, NSUInteger index) {
         [allRecords addObject:record];
     };
     [self parse];
@@ -242,7 +242,7 @@ NSString *const MMPCSVErrorDomain = @"org.purbo.csv";
     
     @autoreleasepool {
         if (!_format.usesFirstLineAsKeys && _beginBlock) {
-            _beginBlock(nil);
+            _beginBlock(nil, 0);
         }
         
         _currentRecord = 0;
@@ -513,7 +513,7 @@ NSString *const MMPCSVErrorDomain = @"org.purbo.csv";
             // must be first record because _header is still nil
             self.header = [NSArray arrayWithArray:_currentRecordArray];
             if (_beginBlock) {
-                _beginBlock(_header);
+                _beginBlock(_header, _currentRecord);
             }
         } else {
             // make sure size is the same as header
@@ -539,7 +539,7 @@ NSString *const MMPCSVErrorDomain = @"org.purbo.csv";
             record = _mapBlock(record);
         }
         if (!_filterBlock || (_filterBlock && _filterBlock(record))) {
-            _eachBlock(record);
+            _eachBlock(record, _currentRecord);
         }
     }
 }

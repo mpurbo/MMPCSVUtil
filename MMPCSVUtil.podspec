@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "MMPCSVUtil"
-  s.version          = "0.1.1"
+  s.version          = "0.1.2"
   s.summary          = "Utility for parsing comma-separated values (CSV) files with blocks and functional programming idioms"
   s.description      = <<-DESC
                        Utility for parsing comma-separated values (CSV) files with blocks and functional programming idioms. 
@@ -16,8 +16,9 @@ Pod::Spec.new do |s|
   s.source           = { :git => "https://github.com/mpurbo/MMPCSVUtil.git", :tag => s.version.to_s }
   s.social_media_url = 'https://twitter.com/purubo'
 
-  s.platform         = :ios
+  s.ios.deployment_target = "6.0"
+  s.osx.deployment_target = "10.7"
+
   s.source_files     = 'Classes'
-  s.framework        = 'CoreData'
   s.requires_arc     = true  
 end

@@ -18,19 +18,19 @@ pod "MMPCSVUtil"
 ## Usage
 
 Include the header file in your code:
-```objectivec
+```objc
 #import <MMPCSVUtil/MMPCSVUtil.h>
 ```
 
 The easiest way to read CSV is simply to read all records as NSArray. Each of the records would be NSArray so the result of the following example is an NSArray of NSArrays:
-```objectivec
+```objc
 NSArray *allRecords = [[MMPCSV readURL:[[NSBundle mainBundle] URLForResource: @"test1" withExtension:@"csv"]] 
                                all];
 NSLog(@"CSV has %lu records", [allRecords count]);
 ```
 
 To save memory for larger CSV files, it's better to interact with the parser directly while it's parsing the file by specifying `each` block that will be called on each of the record produced by the parser. Following example shows how to get notified when the parser has just been finished parsing a field and a record:
-```objectivec
+```objc
 [[[MMPCSV readURL:[[NSBundle mainBundle] URLForResource: @"test1" withExtension:@"csv"]]
           field:^(id field, NSInteger index) {
               NSLog(@"%ld, %@", index, field);
@@ -41,7 +41,7 @@ To save memory for larger CSV files, it's better to interact with the parser dir
 ```
 
 If the first line on the CSV file is a header, the values of the header can be used as keys for the record. When `useFirstLineAsKeys` is used to customize format as shown in the following example, the record passed to `each` block will be an NSDictionary.
-```objectivec
+```objc
 [[[MMPCSV readURL:[[NSBundle mainBundle] URLForResource: @"test2" withExtension:@"csv"]]
           format:[[MMPCSVFormat defaultFormat] useFirstLineAsKeys]]
           each:^(NSDictionary *record, NSUInteger index) {
@@ -54,7 +54,7 @@ Following example shows how to:
 - use `begin` to get notified when the parser starts, and optionally process the header;
 - use `map` to get map parser record output into any object;
 - use `filter` to filter records produced by the parser.
-```objectivec
+```objc
 [[[[[[[MMPCSV readURL:[[NSBundle mainBundle] URLForResource: @"test2" withExtension:@"csv"]]
               format:[[[MMPCSVFormat defaultFormat]
                                      useFirstLineAsKeys]
